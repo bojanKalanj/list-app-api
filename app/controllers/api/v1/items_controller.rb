@@ -17,12 +17,8 @@ module Api::V1
     # POST /items
     def create
       @item = Item.new(item_params)
-
-      if @item.save
-        render json: @item, status: :created, location: @item
-      else
-        render json: @item.errors, status: :unprocessable_entity
-      end
+      puts @item
+      @item.save
     end
 
     # PATCH/PUT /items/1
@@ -37,6 +33,11 @@ module Api::V1
     # DELETE /items/1
     def destroy
       @item.destroy
+      if @item.destroy
+        head :no_content, status: :ok
+      else
+        render json: @item.errors, status: :unprocessable_entity
+      end
     end
 
     private
@@ -47,7 +48,7 @@ module Api::V1
 
       # Only allow a trusted parameter "white list" through.
       def item_params
-        params.require(:item).permit(:title, :desc, :price)
+        params.require(:item).permit(:title, :desc, :price, :id, :created_at, :updated_at)
       end
   end
 end
